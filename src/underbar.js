@@ -195,13 +195,15 @@
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
     // declare a variable with the name clone set to a copy of the collection
-    var clone = collection.slice();
+    var clone = collection;
     // declare a newAcc variable set to either accumulator or clone at the first index
     var newAcc = accumulator || clone[0];
     // if accumulator is equal to 0
     if (accumulator === 0) {
       // set newAcc to 0
       newAcc = 0;
+    } else if (accumulator === false) {
+      newAcc = false;
     }
     // if accumulator is undefined
     if (accumulator === undefined) {
@@ -224,6 +226,8 @@
     return newAcc;
   };
 
+
+
   // Determine if the array or object contains a given value (using `===`).
   _.contains = function(collection, target) {
     // TIP: Many iteration problems can be most easily expressed in
@@ -237,15 +241,45 @@
   };
 
 
+
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+
+    if (!iterator) {
+      // initialize iterator as _.identity
+      iterator = _.identity;
+    }
+        // return call of reduce with accumulator of true
+    return _.reduce(collection, function(isTrue, item) {
+      // if calling the iterator on the current element is false
+      if (!iterator(item)) {
+        // isTrue is equal to false
+        isTrue = false;
+      }
+      // return isTrue
+      return isTrue;
+    }, true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    // declare a variable set to the call of not every
+    if (!iterator) {
+      // initialize iterator as _.identity
+      iterator = _.identity;
+    }
+    var oneIsTrue = !_.every(collection, function(item) {
+      // if iterator call on the element is false
+      if (!iterator(item)) {
+        // return true
+        return true;
+      }
+    });
+    // return the variable
+    return oneIsTrue;
   };
 
 
